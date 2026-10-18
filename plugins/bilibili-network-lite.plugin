@@ -1,0 +1,45 @@
+#!name = Bilibili 网络层净化
+#!desc = 用 Loon 在网络层实现 Make-Bilibili-Great-Than-Ever-Before 的一部分功能：去 AV1、去 PCDN、挡埋点。页面层功能（去广告/布局/线程撕裂）不在此列。
+#!author = zhangx16
+#!homepage = https://github.com/zhangx16/loon
+#!system = iOS,iPadOS,macOS
+#!date = 2026-10-18
+#!tag = Bilibili,工具
+
+[Rule]
+# ---- 埋点 / 上报：域名级拒绝，不依赖 MITM，风险最低 ----
+# data.bilibili.com 是日志上报入口，cm.bilibili.com 是广告追踪入口
+DOMAIN-SUFFIX,data.bilibili.com,REJECT
+DOMAIN-SUFFIX,cm.bilibili.com,REJECT
+
+# ---- PCDN / P2P 兜底：默认关闭 ----
+# playurl 脚本已经把 PCDN 地址从候选列表里剔掉了，这里再拦一层属于双保险。
+# 但直接 REJECT 媒体域名会让播放器撞上连接失败再重试，可能表现为"开头卡一下"，
+# 所以默认注释掉。只有发现仍在走 PCDN 时才打开。
+# DOMAIN-SUFFIX,mcdn.bilivideo.cn,REJECT
+# DOMAIN-SUFFIX,mcdn.bilivideo.com,REJECT
+# DOMAIN-SUFFIX,mcdn.bilivideo.net,REJECT
+# DOMAIN-SUFFIX,szbdyd.com,REJECT
+# DOMAIN-SUFFIX,nexusedgeio.com,REJECT
+# DOMAIN-SUFFIX,ahdohpiechei.com,REJECT
+# DOMAIN,upos-sz-302ppio.bilivideo.com,REJECT
+# DOMAIN,upos-sz-302kodo.bilivideo.com,REJECT
+# DOMAIN,upos-sz-mirror14b.bilivideo.com,REJECT
+
+[Rewrite]
+# 风控指纹上报（上游脚本里是把 window.__biliUserFp__ 之类直接 mock 掉）。
+# 返回空的 200，效果接近上游的 `return new Response()`。
+# 若出现"验证码 / 请稍后再试"之类风控提示，先注释掉这一行。
+^https?:\/\/api\.bilibili\.com\/x\/internal\/gaia-gateway\/ExClimbWuzhi reject-200
+
+[Script]
+# playurl：裁掉 AV1 视频流 + 裁掉 PCDN 地址
+# 覆盖 web 播放、番剧（pgc）、课程（pugv）三种 playurl 接口
+# 脚本源码：scripts/bilibili/playurl-sanitize.js
+# 国内网络拉不动 raw 的话，把下面这条换成 jsDelivr：
+#   script-path=https://cdn.jsdelivr.net/gh/zhangx16/loon@main/scripts/bilibili/playurl-sanitize.js
+http-response ^https?:\/\/api\.bilibili\.com\/(?:x\/player\/(?:wbi\/)?playurl|pgc\/player\/web\/(?:v2\/)?playurl|pugv\/player\/web\/playurl) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/bilibili/playurl-sanitize.js, requires-body=true, timeout=10, tag=Bilibili-PlayURL
+
+[Mitm]
+# 只解密 API 域名；视频分片域名（*.bilivideo.com）千万不要加进来，否则所有流量都要过一遍解密
+hostname = api.bilibili.com
