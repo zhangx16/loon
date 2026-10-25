@@ -11,6 +11,7 @@
 | `hellobike-clean` | 哈啰净化：弹窗、首页推荐、借钱入口、会员领券横条和我的页推广；支持本机动态密钥及加密响应 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hellobike-clean.plugin) |
 | `huazhu-clean` | 华住会去广告：开屏广告和首页弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/huazhu-clean.plugin) |
 | `tencent-sports-clean` | 腾讯体育净化：开屏、信息流、会员推广、赛事横幅和活动弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-clean.plugin) |
+| `caixin-clean` | 财新去广告：广告域名、指定首页推送、搜索推荐、小程序、热门推荐及 AI 问题接口；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/caixin-clean.plugin) |
 
 ## 使用
 

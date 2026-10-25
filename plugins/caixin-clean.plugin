@@ -1,0 +1,22 @@
+#!name = caixin-clean
+#!desc = 财新去广告：拦截广告域名，屏蔽指定数据、首页推送、搜索推荐词、小程序、热门推荐及 AI 问题接口。需开启 MitM 并信任 Loon CA 证书。
+#!author = zhangx16（Loon 适配）
+#!homepage = https://github.com/zhangx16/loon
+#!date = 2026-10-25
+# 来源：用户提供的财新 QX 规则，原作者未注明；保留原接口匹配范围。
+# 原发布说明：财新去广告，经悬赏人同意发布至频道。
+
+[Rule]
+DOMAIN,dolphin.caixin.com,REJECT
+DOMAIN,gg.caixin.com,REJECT
+
+[Rewrite]
+^https:\/\/cxdata\.caixin\.com\/api\/dataplus\/stkData\/list reject-dict
+^https:\/\/entities\.caixin\.com\/api\/public\/push\/appIndex\?target=index reject-dict
+^https:\/\/gateway\.caixin\.com\/api\/app-api\/search\/getkeyword reject-dict
+^https:\/\/gateway\.caixin\.com\/api\/app-api\/caixinminiapp\/appinfo reject-dict
+^https:\/\/gateway\.caixin\.com\/api\/app-api\/articlesHotRecommend\/getHotRecommendArticles reject-dict
+^https:\/\/www\.caixin\.com\/ai\/question.+ reject-dict
+
+[Mitm]
+hostname = cxdata.caixin.com, entities.caixin.com, gateway.caixin.com, www.caixin.com
