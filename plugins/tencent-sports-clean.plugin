@@ -1,0 +1,17 @@
+#!name = tencent-sports-clean
+#!desc = 腾讯体育净化：开屏、首页信息流、会员推广、赛事横幅、悬浮组件和活动弹窗。需开启 MitM 并信任证书；不包含上游另行推荐的视频前贴片广告基础模块。
+#!author = Hey-sayiwanna, zhangx16
+#!homepage = https://github.com/zhangx16/loon
+#!date = 2026-10-25
+# 上游：https://github.com/Hey-sayiwanna/TencentSports-Surge
+# 来源提交：aad85d3669ababee8d64cd6e245b6d0546250bd0
+# 保留两份响应脚本原逻辑；Surge Map Local 改为 Loon 请求脚本，保持空 Body 和 application/proto。
+# CDN 备用：https://cdn.jsdelivr.net/gh/zhangx16/loon@main/scripts/tencent-sports/<脚本名>.js
+
+[Script]
+http-request ^https:\/\/config\.ab\.qq\.com\/tab\/(?:GetTabRemoteConfig|GetTabToggle).* script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/tencent-sports/splash-block.js,requires-body=false,timeout=10,tag=腾讯体育开屏
+http-response ^https:\/\/(?:app\.sports\.qq\.com\/(?:feeds\/list|m\/matchAfter\/stats|match\/adBanner)\?|shequ\.sports\.qq\.com\/topic\/detail\?|film\.video\.qq\.com\/x\/sports-vip-channel\/(?:\?.*)?$) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/tencent-sports/ad-block.js,requires-body=true,binary-body-mode=false,timeout=10,tag=腾讯体育广告净化
+http-response ^https:\/\/(?:app\.sports\.qq\.com\/(?:trpc\.sports_resource\.cgi\.ResourceCGI\/MatchWidgets|vaccess\/trpc\.sports_resource\.cgi\.ResourceCGI\/ColumnWidget|vaccess\/trpc\.sportsbasic\.column\.Column\/GetColumn)|sports\.qq\.com\/sapp\/h5msg\.htm|matchweb\.sports\.qq\.com\/trpc\.dorae\.coin\.Coin\/CoinLayer)(?:\?.*)?$ script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/tencent-sports/float-block.js,requires-body=true,binary-body-mode=false,timeout=10,tag=腾讯体育浮层弹窗
+
+[Mitm]
+hostname = app.sports.qq.com,config.ab.qq.com,shequ.sports.qq.com,film.video.qq.com,sports.qq.com,matchweb.sports.qq.com

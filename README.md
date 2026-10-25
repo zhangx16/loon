@@ -10,6 +10,7 @@
 | `meituan-clean` | 美团 App 12.67.403 净化：隐藏视频/小团标签、推荐流、搜索推荐、购物车横幅及启动图；完整规则需要 Loon Build 1008+ | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/meituan-clean.plugin) |
 | `hellobike-clean` | 哈啰净化：弹窗、首页推荐、借钱入口、会员领券横条和我的页推广；支持本机动态密钥及加密响应 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hellobike-clean.plugin) |
 | `huazhu-clean` | 华住会去广告：开屏广告和首页弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/huazhu-clean.plugin) |
+| `tencent-sports-clean` | 腾讯体育净化：开屏、信息流、会员推广、赛事横幅和活动弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-clean.plugin) |
 
 ## 使用
 
@@ -62,3 +63,15 @@ scripts/<服务名>/   插件引用的 JS，按服务分目录
 - 页面模板在请求阶段由脚本直接返回，并校验上游 MD5/SHA-256；仅解密插件列出的 9 个域名。
 - 已完成模拟请求/响应、AES 往返、密钥捕获、大整数精度、并发关联及模板哈希验证，尚未完成 Loon/哈啰真机验证。
 - 本地验证：`node --check scripts/hellobike/easybike-ad.js && node tests/hellobike.test.cjs`。
+
+## 腾讯体育插件
+
+基于 Hey-sayiwanna 的 [TencentSports-Surge](https://github.com/Hey-sayiwanna/TencentSports-Surge/tree/aad85d3669ababee8d64cd6e245b6d0546250bd0) 适配，保留原两份响应脚本业务逻辑及接口匹配范围。
+Surge 的两条 `Map Local` 转为一个 Loon 请求脚本，返回 HTTP 200、空正文及 `Content-Type: application/proto`；MitM 保留原 6 个域名。
+
+- 添加插件后开启 MitM，并安装、信任 Loon CA 证书；完全退出再启动腾讯体育。
+- 覆盖首页信息流强插广告、置顶会员推广、社区广告、赛事横幅/悬浮组件、金币任务会员弹层、PageCard 强制弹窗和 H5 运营弹窗。
+- **不包含视频播放前约 60 秒广告的拦截能力**：上游将该功能交由另行安装的广告平台及 HTTPDNS 基础模块，本次仅适配所提供的模块及其引用脚本。
+- 若规则已命中但仍显示旧广告，先排查本地缓存；上游建议首次使用时卸载重装 App。若 HTTPS 请求未解密，检查 MitM 与 QUIC 设置。
+- 已完成模拟响应、正常内容保留、开屏响应格式及配置匹配验证，尚未完成 Loon/腾讯体育真机验证。
+- 本地验证：`node tests/tencent-sports.test.cjs`。
