@@ -1,0 +1,17 @@
+#!name = cotti-clean
+#!desc = 库迪咖啡微信小程序净化：拦截指定悬浮推广、弹窗、分享推广及广告排序接口。需开启 MitM 并信任 Loon CA 证书。
+#!author = @Zirawell, zhangx16（Loon 适配）
+#!homepage = https://github.com/zhangx16/loon
+#!date = 2026-10-25
+# 上游：https://github.com/zirawell/R-Store/blob/02451c1fb536296842c950f94479141f08c30a03/Res/Scripts/AntiAd/cotti.js
+# 保留原 AES 参数和五个推广 code；转换请求阶段本地响应及放行方式。
+# CDN 备用：https://cdn.jsdelivr.net/gh/zhangx16/loon@main/scripts/cotti/cotti.js
+
+[Rewrite]
+^https?:\/\/gateway\.cotticoffee\.com\/cotti-capi\/customer\/position\/adSortList reject-dict
+
+[Script]
+http-request ^https?:\/\/gateway\.cotticoffee\.com\/cotti-capi\/customer\/position\/list$ script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/cotti/cotti.js,requires-body=true,binary-body-mode=false,timeout=10,tag=库迪咖啡推广净化
+
+[Mitm]
+hostname = gateway.cotticoffee.com

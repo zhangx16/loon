@@ -12,6 +12,7 @@
 | `huazhu-clean` | 华住会去广告：开屏广告和首页弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/huazhu-clean.plugin) |
 | `tencent-sports-clean` | 腾讯体育净化：开屏、信息流、会员推广、赛事横幅和活动弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-clean.plugin) |
 | `caixin-clean` | 财新去广告：广告域名、指定首页推送、搜索推荐、小程序、热门推荐及 AI 问题接口；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/caixin-clean.plugin) |
+| `cotti-clean` | 库迪咖啡微信小程序净化：指定弹窗、悬浮推广和广告排序接口；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/cotti-clean.plugin) |
 
 ## 使用
 
@@ -76,3 +77,15 @@ Surge 的两条 `Map Local` 转为一个 Loon 请求脚本，返回 HTTP 200、�
 - 若规则已命中但仍显示旧广告，先排查本地缓存；上游建议首次使用时卸载重装 App。若 HTTPS 请求未解密，检查 MitM 与 QUIC 设置。
 - 已完成模拟响应、正常内容保留、开屏响应格式及配置匹配验证，尚未完成 Loon/腾讯体育真机验证。
 - 本地验证：`node tests/tencent-sports.test.cjs`。
+
+## 库迪咖啡微信小程序插件
+
+基于 @Zirawell 的 [cotti.js](https://github.com/zirawell/R-Store/blob/02451c1fb536296842c950f94479141f08c30a03/Res/Scripts/AntiAd/cotti.js) 和用户提供的 QX 规则适配。
+保留上游内置 AES 实现及参数，在请求阶段解密 `data`，仅对原五个推广 code 返回本地 HTTP 404；广告排序接口返回空 JSON。
+
+- 开启 MitM，并安装、信任 Loon CA 证书；关闭后重新打开库迪咖啡微信小程序。
+- 将原请求脚本的状态行改为 Loon 的 `$done({response:{status:404,...}})`，正常请求通过 `$done({})` 放行。补充缺失、异常正文的放行处理，避免重复完成或解析异常中断。
+- 十六进制参数解码改用脚本自带的 CryptoJS，不依赖运行时是否提供 `TextDecoder`。
+- 保留原 URL 范围：`position/list` 仅匹配无查询参数的地址；`adSortList` 保留原前缀匹配。
+- 已通过独立 AES 测试数据、全部五个推广标识、正常请求及异常正文的模拟验证，尚未完成 Loon/微信真机验证。
+- 本地验证：`node --check scripts/cotti/cotti.js && node tests/cotti.test.cjs`。
