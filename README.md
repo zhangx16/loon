@@ -7,6 +7,7 @@
 | 插件 | 说明 | 订阅地址 |
 |---|---|---|
 | `bilibili-network-lite` | B 站网络层净化：去 AV1、去 PCDN、挡埋点。不含去广告/布局等页面层功能 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/bilibili-network-lite.plugin) |
+| `meituan-clean` | 美团 App 12.67.403 净化：隐藏视频/小团标签、推荐流、搜索推荐、购物车横幅及启动图；完整规则需要 Loon Build 1008+ | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/meituan-clean.plugin) |
 
 ## 使用
 
@@ -35,3 +36,13 @@ scripts/<服务名>/   插件引用的 JS，按服务分目录
 - 脚本逻辑尽量保持同步执行、末尾只调一次 `$done()`；Loon 的异步是回调式的，`setInterval` 只执行一次。
 - 需要读 Body 的脚本记得在 `[Script]` 行加 `requires-body=true`。
 - MITM 只加真正需要改写的 API 域名，不要把大流量域名（如视频分片 CDN）加进 `hostname`。
+
+## 美团插件
+
+基于 TG@ZenMoFiShi 的 `ZenmoFeiShi/Qx/MT.snippet` 和 `MT.js`（2026-10-25，用户提供）适配。
+保留原脚本逻辑及全部 35 条拦截规则、8 条响应规则，脚本使用本仓库地址。
+
+- 完整规则需要 Loon Build 1008+，其中 `DOMAIN-WILDCARD` 用于匹配 `mquic-*.meituan.com`。
+- 开启 MitM，并安装、信任 Loon 的 CA 证书。
+- 已通过 Node.js 模拟响应测试，尚未完成 Loon/美团真机验证；原规则适配美团 App 12.67.403。
+- 本地验证：`node --check scripts/meituan/mt.js && node tests/meituan.test.cjs`。

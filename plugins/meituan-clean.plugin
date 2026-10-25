@@ -1,0 +1,59 @@
+#!name = meituan-clean
+#!desc = 美团 App 12.67.403 净化：隐藏视频和小团标签、推荐流、搜索推荐、购物车横幅及启动图。保留原 QX 规则；通配域名规则需要 Loon Build 1008+。
+#!author = TG@ZenMoFiShi, zhangx16
+#!homepage = https://github.com/zhangx16/loon
+#!date = 2026-10-25
+# 原规则及脚本：ZenmoFeiShi/Qx/MT.snippet、MT.js（用户提供，2026-10-25）
+# 脚本保留原逻辑，仅转换插件配置并改用本仓库脚本地址。
+# DOMAIN-WILDCARD 需要 Build 1008+；旧版请升级，避免遗漏 mquic 拦截。
+# CDN 备用脚本：https://cdn.jsdelivr.net/gh/zhangx16/loon@main/scripts/meituan/mt.js
+
+[Rule]
+DOMAIN,shark-mt.meituan.com,REJECT
+DOMAIN,shark-default.meituan.com,REJECT
+DOMAIN,shark-dp.meituan.com,REJECT
+DOMAIN,shark-ps.meituan.com,REJECT
+DOMAIN,shark-wm.sankuai.com,REJECT
+DOMAIN,shark.dianping.com,REJECT
+DOMAIN-WILDCARD,mquic-*.meituan.com,REJECT
+DOMAIN,httpdnsmultiapi.meituan.com,REJECT
+DOMAIN,httpdnsmultiapivip.meituan.com,REJECT
+DOMAIN,dnspod.meituan.httpdns.qcloud.com,REJECT
+DOMAIN,dnspod.meituan.httpdns.start.qcloud.com,REJECT
+IP-CIDR,202.90.108.13/32,REJECT
+IP-CIDR,202.90.110.46/32,REJECT
+IP-CIDR,202.90.108.69/32,REJECT
+IP-CIDR,202.90.110.45/32,REJECT
+IP-CIDR,202.90.108.68/32,REJECT
+IP-CIDR,202.90.110.48/32,REJECT
+IP-CIDR,202.90.108.67/32,REJECT
+IP-CIDR,202.90.110.36/32,REJECT
+IP-CIDR,202.90.108.54/32,REJECT
+IP-CIDR,202.90.108.55/32,REJECT
+IP-CIDR,203.76.217.51/32,REJECT
+IP-CIDR,203.76.217.53/32,REJECT
+IP-CIDR,203.76.217.241/32,REJECT
+IP-CIDR,203.76.217.243/32,REJECT
+IP-CIDR,103.202.146.30/32,REJECT
+IP-CIDR,103.202.146.49/32,REJECT
+IP-CIDR,101.50.8.64/32,REJECT
+IP-CIDR,103.63.160.64/32,REJECT
+IP-CIDR,103.63.160.69/32,REJECT
+IP-CIDR,103.37.155.77/32,REJECT
+IP-CIDR,119.29.48.215/32,REJECT
+IP-CIDR,42.193.128.160/32,REJECT
+IP-CIDR6,2405:1480:3000:303b::303b/128,REJECT
+IP-CIDR6,2405:1480:1000:3::1e/128,REJECT
+
+[Script]
+http-response ^https?:\/\/apimobile\.meituan\.com\/aggroup\/indexTab script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/meituan/mt.js,requires-body=true,binary-body-mode=false,timeout=20,tag=美团底部标签
+http-response ^https?:\/\/feedguess\.meituan\.com\/lycoris\/scene\/(gwc_feed1_2265|personalcenter_2154)(\?|$) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/meituan/mt.js,requires-body=true,binary-body-mode=false,timeout=20,tag=美团推荐流
+http-response ^https?:\/\/mt-personalcenter\.meituan\.com\/usercenter\/display script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/meituan/mt.js,requires-body=true,binary-body-mode=false,timeout=20,tag=美团我的页面
+http-response ^https?:\/\/apimobile\.meituan\.com\/group\/v1\/deal\/searchpage\/defaultword script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/meituan/mt.js,requires-body=true,binary-body-mode=false,timeout=20,tag=美团搜索默认词
+http-response ^https?:\/\/apimobile\.meituan\.com\/group\/v1\/deal\/searchpage\/hotword\/city\/divide\/hotrecommend\/ script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/meituan/mt.js,requires-body=true,binary-body-mode=false,timeout=20,tag=美团搜索推荐
+http-response ^https?:\/\/assistify\.meituan\.com\/assistant\/getAppClientHornConfig script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/meituan/mt.js,requires-body=true,binary-body-mode=false,timeout=20,tag=美团AI技能
+http-response ^https?:\/\/mop\.meituan\.com\/mop\/entry\/shoppingCartEntry script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/meituan/mt.js,requires-body=true,binary-body-mode=false,timeout=20,tag=美团购物车横幅
+http-response ^https?:\/\/mop\.meituan\.com\/api\/entryModule\/startupPicture script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/meituan/mt.js,requires-body=true,binary-body-mode=false,timeout=20,tag=美团启动图
+
+[Mitm]
+hostname = apimobile.meituan.com, feedguess.meituan.com, mop.meituan.com, mt-personalcenter.meituan.com, assistify.meituan.com
