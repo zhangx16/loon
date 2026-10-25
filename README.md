@@ -8,6 +8,7 @@
 |---|---|---|
 | `bilibili-network-lite` | B 站网络层净化：去 AV1、去 PCDN、挡埋点。不含去广告/布局等页面层功能 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/bilibili-network-lite.plugin) |
 | `meituan-clean` | 美团 App 12.67.403 净化：隐藏视频/小团标签、推荐流、搜索推荐、购物车横幅及启动图；完整规则需要 Loon Build 1008+ | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/meituan-clean.plugin) |
+| `hellobike-clean` | 哈啰净化：弹窗、首页推荐、借钱入口、会员领券横条和我的页推广；支持本机动态密钥及加密响应 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hellobike-clean.plugin) |
 
 ## 使用
 
@@ -46,3 +47,17 @@ scripts/<服务名>/   插件引用的 JS，按服务分目录
 - 开启 MitM，并安装、信任 Loon 的 CA 证书。
 - 已通过 Node.js 模拟响应测试，尚未完成 Loon/美团真机验证；原规则适配美团 App 12.67.403。
 - 本地验证：`node --check scripts/meituan/mt.js && node tests/meituan.test.cjs`。
+
+## 哈啰插件
+
+基于 TG@ZenMoFiShi 的 [helloobike.snippet](https://github.com/ZenmoFeiShi/Qx/blob/main/helloobike.snippet)
+及 [easybike-ad.js](https://github.com/ZenmoFeiShi/Qx/blob/8f547d30cead63257fe4cb0068b35cf1fc01d559/easybike-ad.js) 适配。
+保留上游 AES/哈希实现、页面清理逻辑、4 条广告 URL 拦截及页面模板内容；转换为 Loon 的请求/响应脚本与本地响应格式。
+
+- 开启 MitM，并安装、信任 Loon 的 CA 证书。首次添加后完全退出并重启哈啰，让 `/secretkey` 请求捕获本机动态密钥；收到通知后重新进入首页和我的页面。若通知被禁用，可先检查页面净化是否生效。
+- 密钥通过 `$persistentStore` 仅存储在 Loon 本机，不写入仓库，也不上传。动态密钥按版本、指纹和有效期匹配。
+- QX 的 `sessionIndex` 改用 `X-Loon-HelloBike-Context` 请求 Header 关联。该 Header 仅含随机关联编号，发往当前哈啰 API；业务元数据和密钥保留在本机。其余请求 Header 和正文保留。
+- 请求关联缓存限制为 64 个槽位，180 秒过期；关联丢失、槽位碰撞或解密失败时放行原响应。若其他规则移除该 Header，部分净化会跳过。
+- 页面模板在请求阶段由脚本直接返回，并校验上游 MD5/SHA-256；仅解密插件列出的 9 个域名。
+- 已完成模拟请求/响应、AES 往返、密钥捕获、大整数精度、并发关联及模板哈希验证，尚未完成 Loon/哈啰真机验证。
+- 本地验证：`node --check scripts/hellobike/easybike-ad.js && node tests/hellobike.test.cjs`。
