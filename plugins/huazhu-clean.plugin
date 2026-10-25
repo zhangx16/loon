@@ -1,0 +1,13 @@
+#!name = huazhu-clean
+#!desc = 华住会去广告：拦截开屏广告和首页弹窗，返回空 JSON。需开启 MitM 并信任 Loon CA 证书。
+#!author = zhangx16
+#!homepage = https://github.com/zhangx16/loon
+#!date = 2026-10-25
+# 根据用户提供的接口规则转换；首页弹窗补充使用 reject-dict。
+
+[Rewrite]
+^https:\/\/hweb-manager\.huazhu\.com\/start\/getAppStartPage(?:\?|$) reject-dict
+^https:\/\/hweb-manager\.huazhu\.com\/notice\/getAppPopupNotifyAlert(?:\?|$) reject-dict
+
+[Mitm]
+hostname = hweb-manager.huazhu.com
