@@ -1,0 +1,18 @@
+#!name = hupu-clean
+#!desc = 虎扑广告接口净化：对 goblin.hupu.com 的 interfaceAd/getOther 返回指定无广告 JSON。需 Loon 3.5.1(978)+，开启 MitM 并信任证书；效果待真机验证。
+#!author = 热心群友投稿（原作者未注明）, zhangx16（Loon 适配）
+#!homepage = https://github.com/zhangx16/loon
+#!loon_version = 3.5.1(978)
+#!date = 2026-10-31
+# 来源：用户提供的虎扑去广告规则。
+# 修复中文引号、正则分隔符及域名转义；Mock Body 使用 JSON 原始字符串。
+# 保留 getOther/ 路径前缀及该域名 DIRECT 策略。
+
+[Rule]
+DOMAIN-SUFFIX,goblin.hupu.com,DIRECT
+
+[Rewrite]
+response if ${url} ~= /^https?:\/\/goblin\.hupu\.com\/\d+\/[\d.]+\/interfaceAd\/getOther\// then response.body.mock("json", `{"ad_code":-41,"show_type":0,"ads":[]}`, 200)
+
+[Mitm]
+hostname = goblin.hupu.com
