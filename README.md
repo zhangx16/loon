@@ -17,6 +17,7 @@
 | `cotti-clean` | 库迪咖啡微信小程序净化：指定弹窗、悬浮推广和广告排序接口；需开启 MitM 并信任证书 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fcotti-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/cotti-clean.plugin) |
 | `hupu-clean` | 虎扑指定广告接口返回无广告 JSON；需 Loon 3.5.1(978)+，开启 MitM 并信任证书；效果待真机验证 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fhupu-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hupu-clean.plugin) |
 | `zhuanzhuan-clean` | 转转净化（@ddgksf2013）：开屏、弹窗、横幅、信息流、搜索推荐和我的页；需 Loon 3.5.1(978)+ | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fzhuanzhuan-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/zhuanzhuan-clean.plugin) |
+| `weibo-enhanced` | 微博增强（@ddgksf2013）：广告净化、推荐 TAB 和七个关注分组设置；附本机设置页和微博域名 QUIC 拦截 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fweibo-enhanced.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/weibo-enhanced.plugin) |
 
 ## 使用
 
@@ -121,3 +122,16 @@ Surge 的两条 `Map Local` 转为一个 Loon 请求脚本，返回 HTTP 200、�
 - 信息流保留 `type` 不为数字 `29` 的项目；我的页钱包只保留 `balance`，工具栏移除原规则指定的金融、租机等推广项目。
 - 规则也会关闭新人专区、会员中心等运营入口。接口匹配范围和缺失字段处理与上游 JQ 表达式保持一致。
 - 已完成原生 JQ 样例、正常项目保留及 URL 匹配验证，尚未完成 Loon/转转真机验证。
+
+## 微博增强插件
+
+基于 @ddgksf2013 的 [WeiboEnhanced.conf](https://ddgksf2013.top/rewrite/WeiboEnhanced.conf)（规则 V0.1.21，更新日期 2026-10-19）和 [weibo_json.js](https://ddgksf2013.top/scripts/weibo_json.js)（脚本 0.1.52，2026-11-01 获取），原贡献者 @zmqcherish。脚本内置 Loon 运行时适配，本仓库原样保存脚本，仅转换插件配置。
+
+- 开启 MitM，安装、信任 Loon CA 证书；禁用其他微博净化脚本以避免同一接口重复改写，完全退出再启动微博。
+- 在 Safari 打开[微博助手本机设置页](https://api.weibo.cn/__qx_weibo_settings__/)，或从微博内脚本生成的助手入口进入。设置页和配置/保存/重置 API 均由 Loon 请求脚本在本机返回，不需要真实服务端提供页面。路径中的 `qx` 是上游保留的兼容标识，Loon 也使用这个地址。
+- 在设置页控制首页顶部“推荐” TAB、七个关注分组（全部关注、特别关注、好友圈、原创、视频、V+微博、群微博）及其他开关；默认设置沿用上游。配置保存在 Loon 的 `$persistentStore`。
+- QX 的 `udp_drop_list = QUIC` 不适用于 Loon。本插件包含 4 条域名与 `PROTOCOL,QUIC` 组合规则，阻止相关微博 API 的 QUIC，帮助回落到可解密连接；需 Loon 3.1.7+。未封锁其他应用的 QUIC。主配置更高优先级的规则或无法识别域名的连接仍可能影响拦截。
+- 规则覆盖首页/关注信息流、搜索、发现、个人页、详情/评论、视频频道和开屏等接口，实际净化效果取决于 App 版本与响应结构。
+- 自定义开屏图片是上游可选功能，默认关闭；用户选择必应、随机图片或自定义图片来源时，脚本可能向相应图片接口发起请求。
+- 已验证 Loon 本机设置页、配置保存/重置、七个分组及推荐 TAB 设置和模拟净化响应，尚未完成 Loon/微博真机验证。
+- 本地验证：`node tests/weibo-enhanced.test.cjs`。

@@ -1,0 +1,30 @@
+#!name = weibo-enhanced
+#!desc = 微博增强（墨鱼版）：广告净化及界面设置，支持推荐 TAB、七个关注分组等独立控制。自带本机设置页；需开启 MitM 并信任证书。
+#!author = @ddgksf2013, @zmqcherish, zhangx16（Loon 配置适配）
+#!homepage = https://github.com/zhangx16/loon
+#!loon_version = 3.1.7
+#!date = 2026-11-01
+# 规则来源：https://ddgksf2013.top/rewrite/WeiboEnhanced.conf（V0.1.21）
+# 脚本来源：https://ddgksf2013.top/scripts/weibo_json.js（0.1.52，2026-11-01 获取）
+# 脚本 SHA-256：0bb38335cb0cda1ba0003ef44d4e0a4aa98925f11d5a6aa4ec4a765d08c5df41
+# 原脚本已支持 Loon，原样保存；设置路径中的 qx 为上游兼容标识。
+# 本机设置页：https://api.weibo.cn/__qx_weibo_settings__/
+# CDN 备用：https://cdn.jsdelivr.net/gh/zhangx16/loon@main/scripts/weibo/weibo-json.js
+
+[Rule]
+# 阻止以下微博 API 域名使用 QUIC，使请求有机会回落到可 MitM 的连接。
+AND,((DOMAIN,api.weibo.cn),(PROTOCOL,QUIC)),REJECT
+AND,((DOMAIN,bootpreload.uve.weibo.com),(PROTOCOL,QUIC)),REJECT
+AND,((DOMAIN,bootrealtime.uve.weibo.com),(PROTOCOL,QUIC)),REJECT
+AND,((DOMAIN,wbapp.uve.weibo.com),(PROTOCOL,QUIC)),REJECT
+
+[Script]
+http-request ^https:\/\/api\.weibo\.cn/__qx_weibo_settings__/(?:api/config)?(?=[?#]|$) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/weibo/weibo-json.js,requires-body=false,binary-body-mode=false,timeout=20,tag=微博本机设置
+http-request ^https:\/\/api\.weibo\.cn/__qx_weibo_settings__/api/(?:save|reset)(?=[?#]|$) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/weibo/weibo-json.js,requires-body=true,binary-body-mode=false,timeout=20,tag=微博设置保存
+http-response ^https?:\/\/api\.weibo\.cn(?:/2/statuses/container_timeline_hot|/2/guest/container_timeline_hot|/2/statuses/container_timeline_unread|/2/statuses/container_timeline|/2/live/media_homelist|/2/remind/hometab_dot|/2/remind/unread_count|/2/statuses/container_detail|/2/statuses/container_detail_comment|/2/comments/build_comments|/2/search/finder|/2/search/container_timeline|/2/search/container_discover|/2/!/was/finder/searchbarchange|/2/cardlist|/2/searchall|/2/profile/me|/2/profile/container_timeline|/2/video/flow_stream|/2/video/flow_stream_cache|/2/push/daily|/2/push/active|/2/guest/push_active|/2/groups/allgroups/v2|/2/client/abserver_list|/2/checkin/show|/2/video/remind_info|/2/video/home_channels)(?=[?#]|$) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/weibo/weibo-json.js,requires-body=true,binary-body-mode=false,timeout=20,tag=微博响应净化
+http-response ^https?:\/\/bootpreload\.uve\.weibo\.com(?:/v2/ad/preload)(?=[?#]|$) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/weibo/weibo-json.js,requires-body=true,binary-body-mode=false,timeout=20,tag=微博响应净化
+http-response ^https?:\/\/bootrealtime\.uve\.weibo\.com(?:/v3/ad/realtime)(?=[?#]|$) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/weibo/weibo-json.js,requires-body=true,binary-body-mode=false,timeout=20,tag=微博响应净化
+http-response ^https?:\/\/wbapp\.uve\.weibo\.com(?:/wbapplua/wbpullad\.lua)(?=[?#]|$) script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/weibo/weibo-json.js,requires-body=true,binary-body-mode=false,timeout=20,tag=微博响应净化
+
+[Mitm]
+hostname = api.weibo.cn, bootpreload.uve.weibo.com, bootrealtime.uve.weibo.com, wbapp.uve.weibo.com
