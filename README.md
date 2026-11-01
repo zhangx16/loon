@@ -18,6 +18,7 @@
 | `hupu-clean` | 虎扑指定广告接口返回无广告 JSON；需 Loon 3.5.1(978)+，开启 MitM 并信任证书；效果待真机验证 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fhupu-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hupu-clean.plugin) |
 | `zhuanzhuan-clean` | 转转净化（@ddgksf2013）：开屏、弹窗、横幅、信息流、搜索推荐和我的页；需 Loon 3.5.1(978)+ | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fzhuanzhuan-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/zhuanzhuan-clean.plugin) |
 | `weibo-enhanced` | 微博增强（@ddgksf2013）：广告净化、推荐 TAB 和七个关注分组设置；附本机设置页和微博域名 QUIC 拦截 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fweibo-enhanced.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/weibo-enhanced.plugin) |
+| `umetrip-clean` | 航旅纵横净化（@ddgksf2013）：开屏、运营推广、首页瀑布流和会员营销；二进制响应处理，需开启 MitM | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fumetrip-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/umetrip-clean.plugin) |
 
 ## 使用
 
@@ -135,3 +136,14 @@ Surge 的两条 `Map Local` 转为一个 Loon 请求脚本，返回 HTTP 200、�
 - 自定义开屏图片是上游可选功能，默认关闭；用户选择必应、随机图片或自定义图片来源时，脚本可能向相应图片接口发起请求。
 - 已验证 Loon 本机设置页、配置保存/重置、七个分组及推荐 TAB 设置和模拟净化响应，尚未完成 Loon/微博真机验证。
 - 本地验证：`node tests/weibo-enhanced.test.cjs`。
+
+## 航旅纵横插件
+
+基于 @ddgksf2013 的 [UmetripAds.conf](https://ddgksf2013.top/rewrite/UmetripAds.conf)（规则 V1.0.3）及 [umetrip.ads.js](https://ddgksf2013.top/scripts/umetrip.ads.js)（二进制主逻辑 V1.5.0，2026-11-01 获取）适配。保留原 14 个网关域名匹配及广告图片路径拦截，MitM 共 15 个域名。
+
+- 开启 MitM，并安装、信任 Loon CA 证书；禁用其他航旅纵横净化规则以避免重复改写，完全退出再启动 App。
+- 网关规则启用 `requires-body=true,binary-body-mode=true`。QX 的 `bodyBytes` 改为 Loon 的二进制 `body`，修改结果返回 `Uint8Array`；无修改时显式返回 `$done({})`。
+- 按上游 10 个 `rpid` 标识处理指定开屏/弹窗、首页、瀑布流、行程会员横幅、家庭守护推广、历史行程扩容营销、我的页及航班状态会员推广。标识优先从请求 Header 读取，否则从顶层 Protobuf 字段 5 读取。
+- 不新增整站域名拒绝规则，也不扩大上游业务标识范围；未知 `rpid`、未命中广告标记、异常二进制或文本响应保持原样。当前沿用上游二进制主流程，未额外启用其附带但未调用的 JSON 处理入口。
+- 已通过各目标业务标识的合成 Protobuf 数据、核心样例字段保留、未知标识/异常放行及 URL 匹配验证，尚未完成 Loon/航旅纵横真机验证，不能据此保证所有航班、行程或值机流程。
+- 本地验证：`node tests/umetrip.test.cjs`。
