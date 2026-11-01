@@ -1,0 +1,24 @@
+#!name = tencent-video-clean
+#!desc = 腾讯视频净化：开屏、前贴片/中插/暂停广告、底部导航及我的页。基于上游二进制处理逻辑，实际效果待真机验证。
+#!author = TG@ZenMoFiShi, zhangx16（Loon 适配）
+#!homepage = https://github.com/zhangx16/loon
+#!loon_version = 3.5.1(983)
+#!date = 2026-11-01
+# 上游：ZenmoFeiShi/Qx，提交 0569e497ba42b342d8d52e87f096dbdac91bf803
+# 二进制 bodyBytes 转为 Loon Uint8Array body；内置 Protobuf/JCE/gzip 逻辑保留。
+# CDN 备用：https://cdn.jsdelivr.net/gh/zhangx16/loon@main/scripts/tencent-video/ad-clean.js
+# 共享 GetTabRemoteConfig 排除 QQSportsV3 User-Agent，避免覆盖体育版。
+
+[Rule]
+DOMAIN,iacc.stgw.qq.com,REJECT
+DOMAIN,tacc.video.qq.com,REJECT
+
+[Script]
+http-request ^https?:\/\/i\.video\.qq\.com\/(?:\?.*)?$ script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/tencent-video/ad-clean.js,requires-body=true,binary-body-mode=true,timeout=20,tag=腾讯视频净化
+http-response ^https?:\/\/i\.video\.qq\.com\/(?:\?.*)?$ script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/tencent-video/ad-clean.js,requires-body=true,binary-body-mode=true,timeout=20,tag=腾讯视频净化
+http-response ^https?:\/\/iacc\.qq\.com\/(?:\?.*)?$ script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/tencent-video/ad-clean.js,requires-body=true,binary-body-mode=true,timeout=20,tag=腾讯视频净化
+http-response ^https:\/\/rdelivery\.qq\.com\/v1\/sdkconfig\/get(?:\?.*)?$ script-path=https://raw.githubusercontent.com/zhangx16/loon/main/scripts/tencent-video/ad-clean.js,requires-body=true,binary-body-mode=false,timeout=20,tag=腾讯视频净化
+response if ${url} ~= /^https?:\/\/config\.ab\.qq\.com\/tab\/GetTabRemoteConfig(?:\?.*)?$/ && (${request.header['User-Agent']} == null || ${request.header['User-Agent']} ~= /^(?!QQSportsV3\/)/i) then script("https://raw.githubusercontent.com/zhangx16/loon/main/scripts/tencent-video/ad-clean.js") with requires_body=true, binary_body_mode=true, timeout=20, tag="腾讯视频配置净化"
+
+[Mitm]
+hostname = i.video.qq.com, iacc.qq.com, config.ab.qq.com, rdelivery.qq.com

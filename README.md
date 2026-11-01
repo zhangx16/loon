@@ -11,6 +11,8 @@
 | `hellobike-clean` | 哈啰净化：弹窗、首页推荐、借钱入口、会员领券横条和我的页推广；支持本机动态密钥及加密响应 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hellobike-clean.plugin) |
 | `huazhu-clean` | 华住会去广告：开屏广告和首页弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/huazhu-clean.plugin) |
 | `tencent-sports-clean` | 腾讯体育净化：开屏、信息流、会员推广、赛事横幅和活动弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-clean.plugin) |
+| `tencent-sports-zenmo-clean` | 腾讯体育净化（@ZenmoFeiShi）：开屏、我的页、底部会员入口、首页展示和搜索热词；与旧体育版二选一，需 Loon 3.5.1(983)+ | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-zenmo-clean.plugin) |
+| `tencent-video-clean` | 腾讯视频净化（@ZenmoFeiShi）：开屏、前贴片/中插/暂停广告、底部导航和我的页；需 Loon 3.5.1(983)+，效果待真机验证 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-video-clean.plugin) |
 | `caixin-clean` | 财新去广告：广告域名、指定首页推送、搜索推荐、小程序、热门推荐及 AI 问题接口；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/caixin-clean.plugin) |
 | `cotti-clean` | 库迪咖啡微信小程序净化：指定弹窗、悬浮推广和广告排序接口；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/cotti-clean.plugin) |
 | `hupu-clean` | 虎扑指定广告接口返回无广告 JSON；需 Loon 3.5.1(978)+，开启 MitM 并信任证书；效果待真机验证 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hupu-clean.plugin) |
@@ -69,6 +71,8 @@ scripts/<服务名>/   插件引用的 JS，按服务分目录
 
 ## 腾讯体育插件
 
+本节介绍旧版 `tencent-sports-clean`。新增的 @ZenmoFeiShi 版见下节；两个体育插件应二选一，不要同时启用。
+
 基于 Hey-sayiwanna 的 [TencentSports-Surge](https://github.com/Hey-sayiwanna/TencentSports-Surge/tree/aad85d3669ababee8d64cd6e245b6d0546250bd0) 适配，保留原两份响应脚本业务逻辑及接口匹配范围。
 Surge 的两条 `Map Local` 转为一个 Loon 请求脚本，返回 HTTP 200、空正文及 `Content-Type: application/proto`；MitM 保留原 6 个域名。
 
@@ -78,6 +82,21 @@ Surge 的两条 `Map Local` 转为一个 Loon 请求脚本，返回 HTTP 200、�
 - 若规则已命中但仍显示旧广告，先排查本地缓存；上游建议首次使用时卸载重装 App。若 HTTPS 请求未解密，检查 MitM 与 QUIC 设置。
 - 已完成模拟响应、正常内容保留、开屏响应格式及配置匹配验证，尚未完成 Loon/腾讯体育真机验证。
 - 本地验证：`node tests/tencent-sports.test.cjs`。
+
+## 腾讯体育 / 腾讯视频（@ZenmoFeiShi 版）
+
+来源为 TG@ZenMoFiShi 的 [txsports-ad-clean.snippet](https://github.com/ZenmoFeiShi/Qx/blob/0569e497ba42b342d8d52e87f096dbdac91bf803/txsports-ad-clean.snippet)
+及 [TxvideoAD.snippet](https://github.com/ZenmoFeiShi/Qx/blob/0569e497ba42b342d8d52e87f096dbdac91bf803/TxvideoAD.snippet)，脚本取同一提交的 `txsports-ad-clean.js` 和 `Txvideoad.js`，保留原协议转换逻辑及作者署名。
+
+- 需要 Loon 3.5.1(983)+，开启 MitM 并安装、信任 CA 证书。二进制规则启用 `binary-body-mode=true`，使用 Loon 的 `Uint8Array body`；JSON/XML 规则使用文本模式。
+- **安装 `tencent-sports-zenmo-clean` 前，禁用旧版 `tencent-sports-clean`**。两者覆盖的功能不同，旧版的开屏空响应和 `feeds/list` 脚本会与新版冲突。使用腾讯视频版时也应禁用旧体育版，避免其通用配置空响应覆盖视频配置。
+- 新体育版与新视频版可以一起启用：共享的 `config.ab.qq.com/tab/GetTabRemoteConfig` 使用互斥 User-Agent 条件，`QQSportsV3/` 交由体育版，其余请求保留上游视频版的处理范围；无需依赖两个新插件的排列顺序。
+- 体育版处理开屏开关、首页模块/热词、我的页推广和会员入口；上游还会清空 `liveSum` 的 `sum/mids` 及含 `matchInfo` 的 `multiUpdate` 数据，此行为随原版保留。
+- 体育版的 `sports.ssp.qq.com/app` 请求会添加 `X-Loon-Sports-SSP-Target: 0/1`，仅传递广告请求是否命中的判断结果，不传递原正文。若其他插件移除该 Header 且响应阶段无请求正文，该项净化会跳过。
+- 视频版保留上游 TRPC 请求/响应、JCE 和 gzip 处理，包含前贴片/中插/暂停广告列表清理，并保留两条域名拒绝规则。无需从旧体育版另行引入基础模块才能运行这些处理分支；实际播放效果尚未真机验证。
+- 添加后完全退出再启动对应 App。若仍显示缓存界面，先确认请求是否命中及 HTTPS 是否解密；本次未验证所有 App 版本或所有广告形式。
+- 已用独立构造的数据验证 Protobuf、gzip、TRPC、JCE 广告列表、JSON/XML、异常放行及 UA 分流；这不能替代真机抓包和播放验证。
+- 本地验证：`node tests/tencent-zenmo.test.cjs`。
 
 ## 库迪咖啡微信小程序插件
 
