@@ -16,6 +16,7 @@
 | `caixin-clean` | 财新去广告：广告域名、指定首页推送、搜索推荐、小程序、热门推荐及 AI 问题接口；需开启 MitM 并信任证书 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fcaixin-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/caixin-clean.plugin) |
 | `cotti-clean` | 库迪咖啡微信小程序净化：指定弹窗、悬浮推广和广告排序接口；需开启 MitM 并信任证书 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fcotti-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/cotti-clean.plugin) |
 | `hupu-clean` | 虎扑指定广告接口返回无广告 JSON；需 Loon 3.5.1(978)+，开启 MitM 并信任证书；效果待真机验证 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fhupu-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hupu-clean.plugin) |
+| `zhuanzhuan-clean` | 转转净化（@ddgksf2013）：开屏、弹窗、横幅、信息流、搜索推荐和我的页；需 Loon 3.5.1(978)+ | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fzhuanzhuan-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/zhuanzhuan-clean.plugin) |
 
 ## 使用
 
@@ -111,3 +112,12 @@ Surge 的两条 `Map Local` 转为一个 Loon 请求脚本，返回 HTTP 200、�
 - 保留原 URL 范围：`position/list` 仅匹配无查询参数的地址；`adSortList` 保留原前缀匹配。
 - 已通过独立 AES 测试数据、全部五个推广标识、正常请求及异常正文的模拟验证，尚未完成 Loon/微信真机验证。
 - 本地验证：`node --check scripts/cotti/cotti.js && node tests/cotti.test.cjs`。
+
+## 转转插件
+
+基于 @ddgksf2013 的 [转转净化 V1.0.6](https://ddgksf2013.top/rewrite/ZhuanZhuanAds.conf)（上游更新日期 2026-08-24，2026-11-01 获取）转换，保留原 16 条 JQ 净化规则和 6 条拦截规则、6 个 MitM 域名。无需下载外部脚本。
+
+- 需要 Loon 3.5.1(978)+；开启 MitM，并安装、信任 Loon CA 证书，完全退出再启动转转。
+- 信息流保留 `type` 不为数字 `29` 的项目；我的页钱包只保留 `balance`，工具栏移除原规则指定的金融、租机等推广项目。
+- 规则也会关闭新人专区、会员中心等运营入口。接口匹配范围和缺失字段处理与上游 JQ 表达式保持一致。
+- 已完成原生 JQ 样例、正常项目保留及 URL 匹配验证，尚未完成 Loon/转转真机验证。

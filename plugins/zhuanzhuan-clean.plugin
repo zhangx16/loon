@@ -1,0 +1,54 @@
+#!name = zhuanzhuan-clean
+#!desc = 转转净化（墨鱼版）：开屏、弹窗悬浮、首页横幅、信息流推广、搜索推荐及我的页推广。需 Loon 3.5.1(978)+，开启 MitM 并信任证书。
+#!author = @ddgksf2013, zhangx16（Loon 适配）
+#!homepage = https://github.com/zhangx16/loon
+#!loon_version = 3.5.1(978)
+#!date = 2026-11-01
+# 来源：https://ddgksf2013.top/rewrite/ZhuanZhuanAds.conf
+# 上游版本 V1.0.6，更新日期 2026-08-24，获取日期 2026-11-01。
+# 原作者频道：https://t.me/ddgksf2021
+# 保留原 URL 范围和 JQ 表达式，使用 Loon 原生 response.json.jq，无外部脚本。
+
+[Rewrite]
+# > 开屏广告
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zz\/v\d\/zzlogic\/getOpenScreen/ then response.json.jq(".respData=null")
+# > 弹窗 / 悬浮窗 / 气泡 / 顶部运营
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zzopen\/popwindow\/getallpopwin/ then response.json.jq(".respData.popWindow=null | .respData.bottomFloat=null | .respData.bubbleGuide=null | .respData.topOperation=null | .respData.topOperationIsOther=false")
+# > 首页 Banner / 悬浮挂件 / 运营卡片
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/api\/zzlogic\/cbchomepage/ then response.json.jq(".respData.topActBanner=null | .respData.leftPendant={} | .respData.operationCardArea=null | .respData.horizontalCard=null | .respData.newUserArea=null | .respData.redInfoBanner=null")
+# > 回收首页 Banner / 登录礼包 / 运营位
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zzopen\/zzbmlogic\/queryFrontPageWindowInfo/ then response.json.jq(".respData.bannerInfo.data=[] | .respData.popupInfo={} | .respData.operatingInfo=[] | .respData.rightBanner=null | .respData.topAtmosphereV2.carouselList=[]")
+# > 首页信息流推广
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zz\/v\d\/zzinfoshow\/getfeedflowinfo/ then response.json.jq(".respData.infoData=((.respData.infoData // []) | map(select(.type!=29)))")
+# > 新人专区
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/api\/ptlogic\/getnewcomerzoneentry/ then response.json.jq(".respData=null")
+# > 搜索推荐 / 热搜
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zzopen\/zzbmlogic\/getSearchHomePageConfig/ then response.json.jq(".respData.searchWords=[] | .respData.hotBrands=[] | .respData.hotSearch=[] | .respData.hotOrder=[]")
+# > 搜索推荐词
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zz\/transfer\/getsearchword/ then response.json.jq(".respData.recommendword.data=[]")
+# > 搜索框推荐
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zz\/transfer\/getsearchconfigdata/ then response.json.jq(".respData.goods=[] | .respData.officialCheckMindWordConfig={}")
+# > 搜索页榜单 / 活动推荐
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/api\/zzlogic\/getShowCaseWords/ then response.json.jq(".respData.showCaseData=[]")
+# > 浏览赚钱 / 问卷推广
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zzx\/transfer\/getConfigInfo/ then response.json.jq(".respData.zzReport={} | .respData.questionnairePop=[]")
+# > 我的页推广
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zzopen\/ptuserlogic\/getmymien/ then response.json.jq(".respData.bmNewInfo=null | .respData.activityField=null | .respData.miniActivityField=null | .respData.memberCenter=null | .respData.displayChoiceGoodsFeed=0 | .respData.walletArea.cardItems=((.respData.walletArea.cardItems // []) | map(select(.tokenId==\"balance\"))) | .respData.toolbarArea=((.respData.toolbarArea // []) | map(select(.tokenId!=\"3cInvest\" and .tokenId!=\"quzuji\" and .tokenId!=\"financial\" and .tokenId!=\"fenqishagncheng\" and .tokenId!=\"dianyuanzhaomu\" and .tokenId!=\"offlStore\" and .tokenId!=\"equity\")))")
+# > 我的页运营卡片
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zz\/v\d\/zzusercenter\/myprofilevariouscardsv2/ then response.json.jq(".respData.cardList=[]")
+# > 我的页商品推荐
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zz\/v\d\/zzinfoshow\/getchoicegoodsinfos/ then response.json.jq(".respData.infoData=[]")
+# > 红点提示
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zz\/v\d\/corecyclelogic\/getredpointconfig/ then response.json.jq(".respData.showFlag=0 | .respData.picture=\"\"")
+response if ${url} ~= /^https:\/\/app\.zhuanzhuan\.com\/zz\/v\d\/zzlogic\/tabredpoint/ then response.json.jq(".respData={}")
+# > 行为埋点
+^https:\/\/app\.zhuanzhuan\.com\/zz\/v\d\/zzlogic\/(?:reportdautracking|reportVariousData|reportPushChannelStatus|reporttabclick) reject-dict
+^https:\/\/lego\.zhuanzhuan\.com\/(?:v1\/coke|page\/mark) reject-dict
+^https:\/\/lego-tech\.zhuanzhuan\.com\/(?:v1\/coke-tech|page\/mark-p-tech) reject-dict
+# > Sentry / 听云监控
+^https:\/\/sentry\.zhuanzhuan\.com\/api\/\d+\/envelope\/ reject-dict
+^https:\/\/wkdcm1\.tingyun\.com\/(?:initMobileApp|getTaskDefs|reportSpanData) reject-dict
+^https:\/\/wkrt\.tingyun\.com\/getMobileRedirectHost reject-dict
+
+[Mitm]
+hostname = app.zhuanzhuan.com, lego.zhuanzhuan.com, lego-tech.zhuanzhuan.com, sentry.zhuanzhuan.com, wkdcm1.tingyun.com, wkrt.tingyun.com
