@@ -4,22 +4,24 @@
 
 ## 插件列表
 
-| 插件 | 说明 | 订阅地址 |
+| 插件 | 说明 | 安装 / 订阅 |
 |---|---|---|
-| `bilibili-network-lite` | B 站网络层净化：去 AV1、去 PCDN、挡埋点。不含去广告/布局等页面层功能 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/bilibili-network-lite.plugin) |
-| `meituan-clean` | 美团 App 12.67.403 净化：隐藏视频/小团标签、推荐流、搜索推荐、购物车横幅及启动图；完整规则需要 Loon Build 1008+ | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/meituan-clean.plugin) |
-| `hellobike-clean` | 哈啰净化：弹窗、首页推荐、借钱入口、会员领券横条和我的页推广；支持本机动态密钥及加密响应 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hellobike-clean.plugin) |
-| `huazhu-clean` | 华住会去广告：开屏广告和首页弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/huazhu-clean.plugin) |
-| `tencent-sports-clean` | 腾讯体育净化：开屏、信息流、会员推广、赛事横幅和活动弹窗；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-clean.plugin) |
-| `tencent-sports-zenmo-clean` | 腾讯体育净化（@ZenmoFeiShi）：开屏、我的页、底部会员入口、首页展示和搜索热词；与旧体育版二选一，需 Loon 3.5.1(983)+ | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-zenmo-clean.plugin) |
-| `tencent-video-clean` | 腾讯视频净化（@ZenmoFeiShi）：开屏、前贴片/中插/暂停广告、底部导航和我的页；需 Loon 3.5.1(983)+，效果待真机验证 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-video-clean.plugin) |
-| `caixin-clean` | 财新去广告：广告域名、指定首页推送、搜索推荐、小程序、热门推荐及 AI 问题接口；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/caixin-clean.plugin) |
-| `cotti-clean` | 库迪咖啡微信小程序净化：指定弹窗、悬浮推广和广告排序接口；需开启 MitM 并信任证书 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/cotti-clean.plugin) |
-| `hupu-clean` | 虎扑指定广告接口返回无广告 JSON；需 Loon 3.5.1(978)+，开启 MitM 并信任证书；效果待真机验证 | [订阅](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hupu-clean.plugin) |
+| `bilibili-network-lite` | B 站网络层净化：去 AV1、去 PCDN、挡埋点。不含去广告/布局等页面层功能 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fbilibili-network-lite.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/bilibili-network-lite.plugin) |
+| `meituan-clean` | 美团 App 12.67.403 净化：隐藏视频/小团标签、推荐流、搜索推荐、购物车横幅及启动图；完整规则需要 Loon Build 1008+ | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fmeituan-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/meituan-clean.plugin) |
+| `hellobike-clean` | 哈啰净化：弹窗、首页推荐、借钱入口、会员领券横条和我的页推广；支持本机动态密钥及加密响应 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fhellobike-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hellobike-clean.plugin) |
+| `huazhu-clean` | 华住会去广告：开屏广告和首页弹窗；需开启 MitM 并信任证书 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fhuazhu-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/huazhu-clean.plugin) |
+| `tencent-sports-clean` | 腾讯体育净化：开屏、信息流、会员推广、赛事横幅和活动弹窗；需开启 MitM 并信任证书 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Ftencent-sports-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-clean.plugin) |
+| `tencent-sports-zenmo-clean` | 腾讯体育净化（@ZenmoFeiShi）：开屏、我的页、底部会员入口、首页展示和搜索热词；与旧体育版二选一，需 Loon 3.5.1(983)+ | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Ftencent-sports-zenmo-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-sports-zenmo-clean.plugin) |
+| `tencent-video-clean` | 腾讯视频净化（@ZenmoFeiShi）：开屏、前贴片/中插/暂停广告、底部导航和我的页；需 Loon 3.5.1(983)+，效果待真机验证 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Ftencent-video-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/tencent-video-clean.plugin) |
+| `caixin-clean` | 财新去广告：广告域名、指定首页推送、搜索推荐、小程序、热门推荐及 AI 问题接口；需开启 MitM 并信任证书 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fcaixin-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/caixin-clean.plugin) |
+| `cotti-clean` | 库迪咖啡微信小程序净化：指定弹窗、悬浮推广和广告排序接口；需开启 MitM 并信任证书 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fcotti-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/cotti-clean.plugin) |
+| `hupu-clean` | 虎扑指定广告接口返回无广告 JSON；需 Loon 3.5.1(978)+，开启 MitM 并信任证书；效果待真机验证 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fhupu-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hupu-clean.plugin) |
 
 ## 使用
 
-Loon → 配置 → 插件 → 右上角 `+` → 从 URL 添加，粘贴上表的订阅地址即可。
+在已安装 Loon 的设备上点击上表「添加到 Loon」，即可唤起 Loon 导入插件。
+如果浏览器或 GitHub App 未能唤起，请在 Safari 中打开仓库页面重试，或复制「原始链接」到 Loon → 配置 → 插件 → 右上角 `+` → 从 URL 添加。
+安装入口使用 [Loon 官方通用链接](https://nsloon.app/docs/Scheme/)，将插件地址 URL 编码后传给 `plugin` 参数。
 插件里的脚本走 `raw.githubusercontent.com`，国内网络拉不动时把 `script-path=` 换成对应的
 `cdn.jsdelivr.net/gh/zhangx16/loon@main/...` 地址（插件文件里有注释示例）。
 
