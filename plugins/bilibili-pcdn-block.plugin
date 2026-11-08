@@ -1,0 +1,106 @@
+#!name = bilibili-pcdn-block
+#!desc = B 站 PCDN 与埋点拦截，含用户提供的通用 PCDN/云厂商域名及关键词。无需 MitM；也可能影响猫耳 FM 和其他使用这些域名的服务。
+#!author = zhangx16（整理适配；原规则作者未注明）
+#!homepage = https://github.com/zhangx16/loon
+#!date = 2026-11-08
+# 来源：用户提供的域名列表，未独立验证各域名当前用途及覆盖效果。
+# 统一补齐 REJECT；去重；edge.mountaintoys.cn 已由 mountaintoys.cn 覆盖。
+# pcdn.biliapi.net 不含通配符，使用 DOMAIN 精确匹配，不要求 DOMAIN-WILDCARD 新版本。
+# 如播放器等待重试或其他服务受影响，可单独停用此插件。
+
+[Rule]
+# Bilibili / 猫耳 FM（用户提供）
+DOMAIN-SUFFIX,solseedr.cn,REJECT
+DOMAIN-SUFFIX,solseed.cn,REJECT
+
+# Pai Ou Cloud / 通用 PCDN（用户提供，作用不限于 B 站）
+DOMAIN-SUFFIX,ppgslb.cn,REJECT
+DOMAIN-SUFFIX,eeeam.com,REJECT
+DOMAIN-SUFFIX,pocedsgslb.com,REJECT
+DOMAIN-SUFFIX,paigod.work,REJECT
+DOMAIN-SUFFIX,scwl.cn,REJECT
+DOMAIN-SUFFIX,paisine.com,REJECT
+DOMAIN-SUFFIX,pplabs.com,REJECT
+DOMAIN-SUFFIX,ppgslb.com,REJECT
+DOMAIN-SUFFIX,ppio.com,REJECT
+DOMAIN-SUFFIX,ppio.cn,REJECT
+DOMAIN-SUFFIX,ppos.com,REJECT
+DOMAIN-SUFFIX,paicosine.com,REJECT
+DOMAIN-SUFFIX,pai-net.work,REJECT
+DOMAIN-SUFFIX,dddfe.com,REJECT
+DOMAIN-SUFFIX,demoforge.site,REJECT
+DOMAIN-SUFFIX,ppiocloud.site,REJECT
+DOMAIN-SUFFIX,ppio.online,REJECT
+DOMAIN-SUFFIX,ppinfra.com,REJECT
+DOMAIN-SUFFIX,ppiocdn.com,REJECT
+DOMAIN-SUFFIX,ppiocdn.cn,REJECT
+DOMAIN-SUFFIX,nexusedgeio.com,REJECT
+DOMAIN-SUFFIX,pyrcms.com,REJECT
+DOMAIN-SUFFIX,pyedsgslb.com,REJECT
+DOMAIN-SUFFIX,ppio.work,REJECT
+DOMAIN-SUFFIX,thefirstchain.com,REJECT
+DOMAIN-SUFFIX,paigpu.com,REJECT
+DOMAIN-SUFFIX,gncrr.live,REJECT
+DOMAIN-SUFFIX,ppio.cloud,REJECT
+DOMAIN-SUFFIX,scsd.cn,REJECT
+DOMAIN-SUFFIX,xyxyzz.com,REJECT
+DOMAIN-SUFFIX,ppio.net.cn,REJECT
+
+# Bilibili PCDN（用户提供）
+DOMAIN-SUFFIX,mcdn.bilivideo.cn,REJECT
+DOMAIN-SUFFIX,mcdn.bilivideo.com,REJECT
+DOMAIN-SUFFIX,ppio.bilivideo.com,REJECT
+DOMAIN-SUFFIX,kodo.bilivideo.com,REJECT
+DOMAIN-SUFFIX,abcdefgaijkl.com,REJECT
+DOMAIN-SUFFIX,wiebaijitamo.com,REJECT
+DOMAIN-SUFFIX,abcdegghijkl.com,REJECT
+DOMAIN-SUFFIX,opqrsduvwxyz.com,REJECT
+DOMAIN-SUFFIX,zyxwvutsrqpo.com,REJECT
+DOMAIN-SUFFIX,clipspacexyy.com,REJECT
+DOMAIN-SUFFIX,netvisorhub.com,REJECT
+DOMAIN-SUFFIX,lmnopqrstuvw.com,REJECT
+DOMAIN-SUFFIX,quantazoomz.com,REJECT
+DOMAIN-SUFFIX,stormfluxixx.com,REJECT
+DOMAIN-SUFFIX,datapixelzzx.com,REJECT
+DOMAIN-SUFFIX,ijklmnopqrst.com,REJECT
+DOMAIN-SUFFIX,flexcloudyz.com,REJECT
+DOMAIN-SUFFIX,dooquuequezi.com,REJECT
+DOMAIN-SUFFIX,taishoopecei.com,REJECT
+DOMAIN-SUFFIX,qrstuvwxyzab.com,REJECT
+DOMAIN-SUFFIX,zeicaefiegoh.com,REJECT
+DOMAIN-SUFFIX,zonerushappz.com,REJECT
+DOMAIN-SUFFIX,techvortexz1.com,REJECT
+DOMAIN-SUFFIX,alphawebzzz.com,REJECT
+DOMAIN-SUFFIX,gliderboxxyy.com,REJECT
+DOMAIN-SUFFIX,ahdohpiechei.com,REJECT
+DOMAIN-SUFFIX,xionguamaqui.com,REJECT
+DOMAIN-SUFFIX,gaetausohyei.com,REJECT
+DOMAIN-SUFFIX,roongeimahwo.com,REJECT
+DOMAIN-SUFFIX,kaiwaijaicai.com,REJECT
+DOMAIN-SUFFIX,ourdvsss.com,REJECT
+
+# 臻选云（用户提供）
+DOMAIN-SUFFIX,zhenxyun.cn,REJECT
+DOMAIN-SUFFIX,zhenxcloud.cn,REJECT
+DOMAIN-SUFFIX,zhenidc.cn,REJECT
+DOMAIN-SUFFIX,zxycdn.cn,REJECT
+DOMAIN-SUFFIX,zhenxuanidc.cn,REJECT
+DOMAIN-SUFFIX,zhenxuancdn.cn,REJECT
+DOMAIN-SUFFIX,zhenxuancloud.com,REJECT
+
+# 补充 PCDN 域名（用户提供）
+DOMAIN-SUFFIX,szbdyd.com,REJECT
+DOMAIN-SUFFIX,mountaintoys.cn,REJECT
+
+# 用户提供的 B 站埋点域名
+DOMAIN,data.bilibili.com,REJECT
+DOMAIN,dataflow.biliapi.com,REJECT
+DOMAIN,cm.bilibili.com,REJECT
+
+# 原 DOMAIN-WILDCARD 未含通配符，转为精确 DOMAIN，避免版本依赖
+DOMAIN,pcdn.biliapi.net,REJECT
+
+# 关键词匹配（对所有目标域名生效）
+DOMAIN-KEYWORD,smogfly,REJECT
+DOMAIN-KEYWORD,wuchuyun,REJECT
+DOMAIN-KEYWORD,wuchucloud,REJECT

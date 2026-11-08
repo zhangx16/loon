@@ -7,6 +7,7 @@
 | 插件 | 说明 | 安装 / 订阅 |
 |---|---|---|
 | `bilibili-network-lite` | B 站网络层净化：去 AV1、去 PCDN、挡埋点。不含去广告/布局等页面层功能 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fbilibili-network-lite.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/bilibili-network-lite.plugin) |
+| `bilibili-pcdn-block` | B 站 PCDN/埋点域名拦截，含通用云厂商域名及关键词；无需 MitM，影响范围不限于 B 站 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fbilibili-pcdn-block.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/bilibili-pcdn-block.plugin) |
 | `meituan-clean` | 美团 App 12.67.403 净化：隐藏视频/小团标签、推荐流、搜索推荐、购物车横幅及启动图；完整规则需要 Loon Build 1008+ | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fmeituan-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/meituan-clean.plugin) |
 | `hellobike-clean` | 哈啰净化：弹窗、首页推荐、借钱入口、会员领券横条和我的页推广；支持本机动态密钥及加密响应 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fhellobike-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/hellobike-clean.plugin) |
 | `huazhu-clean` | 华住会去广告：开屏广告和首页弹窗；需开启 MitM 并信任证书 | [添加到 Loon](https://www.nsloon.com/openloon/import?plugin=https%3A%2F%2Fraw.githubusercontent.com%2Fzhangx16%2Floon%2Fmain%2Fplugins%2Fhuazhu-clean.plugin) · [原始链接](https://raw.githubusercontent.com/zhangx16/loon/main/plugins/huazhu-clean.plugin) |
@@ -147,3 +148,13 @@ Surge 的两条 `Map Local` 转为一个 Loon 请求脚本，返回 HTTP 200、�
 - 不新增整站域名拒绝规则，也不扩大上游业务标识范围；未知 `rpid`、未命中广告标记、异常二进制或文本响应保持原样。当前沿用上游二进制主流程，未额外启用其附带但未调用的 JSON 处理入口。
 - 已通过各目标业务标识的合成 Protobuf 数据、核心样例字段保留、未知标识/异常放行及 URL 匹配验证，尚未完成 Loon/航旅纵横真机验证，不能据此保证所有航班、行程或值机流程。
 - 本地验证：`node tests/umetrip.test.cjs`。
+
+## B 站 PCDN 拦截插件
+
+`bilibili-pcdn-block` 按用户于 2026-11-08 提供的列表整理，补齐 `REJECT`、删除重复项并合并父域名已覆盖的子域名。`pcdn.biliapi.net` 原规则没有通配符，改为精确 `DOMAIN`，无需依赖新版 `DOMAIN-WILDCARD`。保留用户提供的域名拼写，未独立验证各域名当前归属或用途。
+
+- 独立域名拦截插件，无 JavaScript、无需 MitM 或 CA 证书。
+- 可以与 `bilibili-network-lite` 配合使用：原插件继续处理播放地址，此插件拒绝命中域名的连接。原插件默认关闭的域名兜底规则保持原样。
+- 列表包含用户标注的猫耳 FM、通用 PCDN 和云厂商域名，以及 `smogfly`、`wuchuyun`、`wuchucloud` 三个关键词。规则按目标域名生效，**不限于 B 站流量**，可能影响其他使用这些域名的服务。
+- 播放器命中拒绝规则后是否回退其他 CDN 取决于客户端，可能出现等待重试或加载失败；需要结合请求日志真机确认。可以单独停用此插件排查。
+- 已检查规则格式、去重、原域名覆盖和一键安装链接，尚未完成真机验证。
